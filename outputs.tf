@@ -1,3 +1,7 @@
+output "monitor_alert_prometheus_rule_groups_id" {
+  description = "Map of id values across all monitor_alert_prometheus_rule_groups, keyed the same as var.monitor_alert_prometheus_rule_groups"
+  value       = { for k, v in azurerm_monitor_alert_prometheus_rule_group.monitor_alert_prometheus_rule_groups : k => v.id }
+}
 output "monitor_alert_prometheus_rule_groups_cluster_name" {
   description = "Map of cluster_name values across all monitor_alert_prometheus_rule_groups, keyed the same as var.monitor_alert_prometheus_rule_groups"
   value       = { for k, v in azurerm_monitor_alert_prometheus_rule_group.monitor_alert_prometheus_rule_groups : k => v.cluster_name }

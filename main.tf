@@ -11,29 +11,32 @@ resource "azurerm_monitor_alert_prometheus_rule_group" "monitor_alert_prometheus
   rule_group_enabled  = each.value.rule_group_enabled
   tags                = each.value.tags
 
-  rule {
-    dynamic "action" {
-      for_each = each.value.rule.action != null ? each.value.rule.action : []
-      content {
-        action_group_id   = action.value.action_group_id
-        action_properties = action.value.action_properties
+  dynamic "rule" {
+    for_each = each.value.rule
+    content {
+      dynamic "action" {
+        for_each = rule.value.action != null ? rule.value.action : []
+        content {
+          action_group_id   = action.value.action_group_id
+          action_properties = action.value.action_properties
+        }
       }
-    }
-    alert = each.value.rule.alert
-    dynamic "alert_resolution" {
-      for_each = each.value.rule.alert_resolution != null ? [each.value.rule.alert_resolution] : []
-      content {
-        auto_resolved   = alert_resolution.value.auto_resolved
-        time_to_resolve = alert_resolution.value.time_to_resolve
+      alert = rule.value.alert
+      dynamic "alert_resolution" {
+        for_each = rule.value.alert_resolution != null ? [rule.value.alert_resolution] : []
+        content {
+          auto_resolved   = alert_resolution.value.auto_resolved
+          time_to_resolve = alert_resolution.value.time_to_resolve
+        }
       }
+      annotations = rule.value.annotations
+      enabled     = rule.value.enabled
+      expression  = rule.value.expression
+      for         = rule.value.for
+      labels      = rule.value.labels
+      record      = rule.value.record
+      severity    = rule.value.severity
     }
-    annotations = each.value.rule.annotations
-    enabled     = each.value.rule.enabled
-    expression  = each.value.rule.expression
-    for         = each.value.rule.for
-    labels      = each.value.rule.labels
-    record      = each.value.rule.record
-    severity    = each.value.rule.severity
   }
 }
 

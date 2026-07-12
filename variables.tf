@@ -39,7 +39,7 @@ EOT
     interval            = optional(string)
     rule_group_enabled  = optional(bool)
     tags                = optional(map(string))
-    rule = object({
+    rule = list(object({
       action = optional(list(object({
         action_group_id   = string
         action_properties = optional(map(string))
@@ -56,12 +56,12 @@ EOT
       labels      = optional(map(string))
       record      = optional(string)
       severity    = optional(number)
-    })
+    }))
   }))
   validation {
     condition = alltrue([
       for k, v in var.monitor_alert_prometheus_rule_groups : (
-        v.rule.action == null || (length(v.rule.action) <= 5)
+        alltrue([for item in v.rule : (item.action == null || (length(item.action) <= 5))])
       )
     ])
     error_message = "Each action list must contain at most 5 items"

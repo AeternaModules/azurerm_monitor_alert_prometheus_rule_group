@@ -61,6 +61,14 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.monitor_alert_prometheus_rule_groups : (
+        length(v.rule) >= 1
+      )
+    ])
+    error_message = "Each rule list must contain at least 1 items"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.monitor_alert_prometheus_rule_groups : (
         alltrue([for item in v.rule : (item.action == null || (length(item.action) <= 5))])
       )
     ])
